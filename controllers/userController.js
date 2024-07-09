@@ -2,6 +2,9 @@ const { body, validationResult } = require("express-validator")
 const asyncHandler = require("express-async-handler")
 const User = require('../models/user')
 const bcrypt = require("bcryptjs")
+const passport = require("../passport-config");
+const jwt = require('../jwt-config')
+
 
 exports.sign_up_post = [
     body("firstName").trim().isLength({ min: 1}).escape().withMessage("Required firstName"),
@@ -39,4 +42,23 @@ exports.sign_up_post = [
             })
         }
     })
-]
+];
+
+exports.login_post = (req, res, next) => {
+    passport.authenticate("local", (err, user, info) => {
+        if (err) {
+            return next(err)
+        }
+        if (!user) {
+            res.send(info.message)
+            return;
+        }
+        const tokenObject = jwt.issueJWT(user)
+        res.status(200).json({
+            success: true,
+            token: tokenObject.token,
+            expiresIn: tokenObject.expires,
+          });
+        return;
+    })(req, res, next)
+}
