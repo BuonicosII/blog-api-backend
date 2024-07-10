@@ -33,6 +33,7 @@ passport.use(
     new JwtStrategy(options, async (jwt_payload, done) => {
       try {
         const user = await User.findOne({ _id: jwt_payload.sub });
+
         if (!user) {
           return done(null, false, { message: "Incorrect username" });
         };

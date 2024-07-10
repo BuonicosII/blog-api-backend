@@ -7,11 +7,11 @@ exports.issueJWT = (user) => {
         iat: Date.now()
     }
 
-    const signedToken = jsonwebtoken.sign(payload, process.env.PRIV_KEY, {
-        expiresIn: "1d"
+    const signedToken = jsonwebtoken.sign(payload, process.env.PUB_KEY, {
+        expiresIn: "1d",
     });
 
     return {
-        token: "Bearer " + signedToken,
+        token: signedToken
     };
 }
