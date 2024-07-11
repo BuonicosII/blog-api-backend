@@ -8,10 +8,10 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.post('/users', userController.sign_up_post)
+router.post('/users/sign-up', userController.sign_up_post)
 
 router.post('/users/login', userController.login_post)
 
-router.get('/protected-route', postController.test)
+router.post('/posts/create-post', postController.create_post_post)
 
 module.exports = router;
