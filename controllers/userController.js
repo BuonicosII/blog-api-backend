@@ -18,7 +18,7 @@ exports.sign_up_post = [
         const errors = validationResult(req)
 
         if (!errors.isEmpty()) {
-            res.send(errors.array())
+            res.status(200).json(errors.array())
         } else {
             bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
                 if (err) {
@@ -34,7 +34,7 @@ exports.sign_up_post = [
                             author: true
                         });
                         await user.save();
-                        res.send(user);
+                        res.status(200).json(user);
                     } catch(err) {
                         return next(err);
                     };
