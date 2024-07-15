@@ -26,4 +26,9 @@ exports.create_comment_post = [
             };
         }
     })
-]
+];
+
+exports.get_post_comments = asyncHandler( async (req, res, next) => {
+    const allComments = Comment.find({ post: req.params.id}).populate("user").exec()
+    res.status(200).json(allComments)
+})
