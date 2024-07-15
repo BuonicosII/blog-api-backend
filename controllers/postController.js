@@ -30,6 +30,16 @@ exports.create_post_post = [
           return next(err);
       };
     }
+})];
 
+exports.get_all_posts = asyncHandler ( async (req, res, next) => {
+    const allPosts = await Post.find().exec();
 
-})]
+    res.status(200).json(allPosts)
+})
+
+exports.get_post = asyncHandler ( async (req, res, next) => {
+  const post = await Post.findById(req.params.id).populate("user").exec();
+
+  res.status(200).json(post)
+})
