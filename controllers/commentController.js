@@ -29,6 +29,6 @@ exports.create_comment_post = [
 ];
 
 exports.get_post_comments = asyncHandler( async (req, res, next) => {
-    const allComments = await Comment.find({ post: req.params.id }).populate("user").exec()
+    const allComments = await Comment.find({ post: req.params.postid }).populate("user").exec()
     res.status(200).json(allComments)
 })

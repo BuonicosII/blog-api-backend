@@ -39,7 +39,7 @@ exports.get_all_posts = asyncHandler ( async (req, res, next) => {
 })
 
 exports.get_post = asyncHandler ( async (req, res, next) => {
-  const post = await Post.findById(req.params.id).populate("user").exec();
+  const post = await Post.findById(req.params.postid).populate("user").exec();
 
   res.status(200).json(post)
 })
