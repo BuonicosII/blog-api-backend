@@ -1,11 +1,10 @@
 require('dotenv').config()
-var createError = require('http-errors');
+const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const session = require("express-session");
-const MongoStore = require('connect-mongo');
+const cors = require('cors')
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 
@@ -18,7 +17,7 @@ main().catch((err) => console.log(err));
 async function main() {
   await mongoose.connect(process.env.MONGODB_URI);
 }
-
+app.use(cors())
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
