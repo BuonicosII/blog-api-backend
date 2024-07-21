@@ -44,13 +44,17 @@ exports.sign_up_post = [
     })
 ];
 
+exports.get_user = [passport.authenticate("jwt", { session: false }), (req, res) => {
+    res.json(req.user)
+}]
+
 exports.login_post = (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
         if (err) {
             return next(err)
         }
         if (!user) {
-            res.send(info.message)
+            res.json(info.message)
             return;
         }
         const tokenObject = jwt.issueJWT(user)

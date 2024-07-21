@@ -13,6 +13,8 @@ router.post('/users/sign-up', userController.sign_up_post)
 
 router.post('/users/login', userController.login_post)
 
+router.get('/users/user', userController.get_user)
+
 router.get('/posts', postController.get_all_posts)
 
 router.get('/posts/:postid', postController.get_post)
