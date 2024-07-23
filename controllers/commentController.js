@@ -20,7 +20,7 @@ exports.create_comment_post = [
                 })
 
                 await comment.save();
-                res.send(comment);
+                res.status(200).json(comment);
             } catch(err) {
                 return next(err);
             };
