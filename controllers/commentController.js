@@ -32,3 +32,8 @@ exports.get_post_comments = asyncHandler( async (req, res, next) => {
     const allComments = await Comment.find({ post: req.params.postid }).populate("user").sort({ timeStamp: -1}).exec()
     res.status(200).json(allComments)
 })
+
+exports.get_all_comments = asyncHandler( async (req, res, next) => {
+    const allComments = await Comment.find().populate("user").sort({ timeStamp: -1}).exec()
+    res.status(200).json(allComments)
+})

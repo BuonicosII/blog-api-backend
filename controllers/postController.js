@@ -22,10 +22,10 @@ exports.create_post_post = [
               text: req.body.text,
               timeStamp: new Date(),
               user: req.user._id,
-              published: true
+              published: req.body.published
           });
           await post.save();
-          res.send(post);
+          res.status(200).json(post);
       } catch(err) {
           return next(err);
       };
