@@ -32,6 +32,36 @@ exports.create_post_post = [
     }
 })];
 
+exports.update_post_put = [
+  passport.authenticate("jwt", { session: false }),
+  body("title").trim().isLength({ min: 1}).escape().withMessage("Required title"),
+  body("text").trim().isLength({ min: 1}).escape().withMessage("Required text"),
+  asyncHandler( async (req, res, next) => {
+    const errors = validationResult(req)
+    if (req.user.author === false) {
+      res.status(403).json({
+        msg: "You don't have the authorization to post"
+      })
+    } else if (!errors.isEmpty()) {
+      res.status(200).json(errors.array())
+    } else {
+      try {
+          const post = new Post ({
+              title: req.body.title,
+              text: req.body.text,
+              timeStamp: new Date(),
+              user: req.user._id,
+              published: req.body.published,
+              _id: req.body._id
+          });
+          await Post.findByIdAndUpdate(req.body._id, post, {});
+          res.status(200).json(post);
+      } catch(err) {
+          return next(err);
+      };
+    }
+})];
+
 exports.get_all_posts = asyncHandler ( async (req, res, next) => {
     const allPosts = await Post.find().exec();
 
@@ -43,3 +73,4 @@ exports.get_post = asyncHandler ( async (req, res, next) => {
 
   res.status(200).json(post)
 })
+
