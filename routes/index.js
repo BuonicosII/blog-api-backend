@@ -21,6 +21,8 @@ router.get('/posts/:postid', postController.get_post)
 
 router.put('/posts/', postController.update_post_put)
 
+router.delete('/posts/:postid', postController.delete_post)
+
 router.get('/posts/:postid/comments', commentController.get_post_comments)
 
 router.post('/posts', postController.create_post_post)

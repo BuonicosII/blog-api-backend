@@ -1,6 +1,8 @@
 const passport = require("../passport-config");
 const asyncHandler = require("express-async-handler")
 const Post = require('../models/post')
+const Comment = require('../models/comment')
+const bcrypt = require("bcryptjs")
 const { body, validationResult } = require("express-validator")
 
 exports.create_post_post = [
@@ -74,3 +76,24 @@ exports.get_post = asyncHandler ( async (req, res, next) => {
   res.status(200).json(post)
 })
 
+exports.delete_post = [
+  passport.authenticate("jwt", { session: false }),
+  body("password").trim().isLength({ min: 1}).escape().withMessage("Enter your password").custom( async (value, { req }) => {
+    const match = await bcrypt.compare(value, req.user.password) 
+    return match
+  }).withMessage("Wrong password"),
+  asyncHandler( async (req, res, next) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      res.status(200).json(errors.array())
+    } else {
+      try {
+          await Promise.all([Post.findByIdAndDelete(req.body._id), Comment.deleteMany({post: req.body._id})]);
+
+          res.status(200).json(req.user);
+      } catch(err) {
+          return next(err);
+      };
+    }
+})];
