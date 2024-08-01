@@ -31,4 +31,6 @@ router.post('/comments', commentController.create_comment_post)
 
 router.get('/comments', commentController.get_all_comments)
 
+router.put('/comments', commentController.update_comment_put)
+
 module.exports = router;
