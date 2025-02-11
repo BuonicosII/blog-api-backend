@@ -1,18 +1,17 @@
-require("dotenv").config();
-const createError = require("http-errors");
-const express = require("express");
-const path = require("path");
-const cors = require("cors");
-const mongoose = require("mongoose");
-mongoose.set("strictQuery", false);
-
-const indexRouter = require("./routes/index");
+import "dotenv/config.js";
+import createError from "http-errors";
+import express, { json, urlencoded, static as static_ } from "express";
+import { join } from "path";
+import cors from "cors";
+import indexRouter from "./routes/index";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(json());
+app.use(urlencoded({ extended: false }));
+app.use(static_(join(__dirname, "public")));
 
 app.use("/", indexRouter);
 
