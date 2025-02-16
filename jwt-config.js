@@ -3,7 +3,7 @@ import jsonwebtoken from "jsonwebtoken";
 
 export function issueJWT(user) {
   const payload = {
-    sub: user._id,
+    sub: user.id,
     iat: Date.now(),
   };
 

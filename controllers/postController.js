@@ -27,14 +27,15 @@ export const create_post_post = [
       res.status(200).json(errors.array());
     } else {
       try {
-        const post = new Post({
-          title: req.body.title,
-          text: req.body.text,
-          timeStamp: new Date(),
-          user: req.user._id,
-          published: req.body.published,
+        const post = await prisma.post.create({
+          data: {
+            title: req.body.title,
+            text: req.body.text,
+            timeStamp: new Date(),
+            user: { connect: { id: req.user.id } },
+            published: req.body.published,
+          },
         });
-        await post.save();
         res.status(200).json(post);
       } catch (err) {
         return next(err);
@@ -65,15 +66,14 @@ export const update_post_put = [
       res.status(200).json(errors.array());
     } else {
       try {
-        const post = new Post({
-          title: req.body.title,
-          text: req.body.text,
-          timeStamp: new Date(),
-          user: req.user._id,
-          published: req.body.published,
-          _id: req.body._id,
+        const post = await prisma.post.update({
+          where: { id: req.body.id },
+          data: {
+            title: req.body.title,
+            text: req.body.text,
+            published: req.body.published,
+          },
         });
-        await findByIdAndUpdate(req.body._id, post, {});
         res.status(200).json(post);
       } catch (err) {
         return next(err);
@@ -83,14 +83,12 @@ export const update_post_put = [
 ];
 
 export const get_all_posts = asyncHandler(async (req, res, next) => {
-  const allPosts = await find().exec();
-
+  const allPosts = await prisma.post.findMany({});
   res.status(200).json(allPosts);
 });
 
 export const get_post = asyncHandler(async (req, res, next) => {
-  const post = await findById(req.params.postid).populate("user").exec();
-
+  const post = await prisma.post.findUnique({ id: req.params.postid });
   res.status(200).json(post);
 });
 
@@ -102,7 +100,7 @@ export const delete_post = [
     .escape()
     .withMessage("Enter your password")
     .custom(async (value, { req }) => {
-      const match = await compare(value, req.user.password);
+      const match = await bcryptjs.compare(value, req.user.password);
       return match;
     })
     .withMessage("Wrong password"),
@@ -114,10 +112,9 @@ export const delete_post = [
     } else {
       try {
         await Promise.all([
-          findByIdAndDelete(req.body._id),
-          deleteMany({ post: req.body._id }),
+          prisma.post.delete({ where: { id: req.body.id } }),
+          prisma.comment.deleteMany({ where: { post: { id: req.body.id } } }),
         ]);
-
         res.status(200).json(req.user);
       } catch (err) {
         return next(err);
