@@ -1,8 +1,8 @@
 import { body, validationResult } from "express-validator";
 import asyncHandler from "express-async-handler";
-import { hash } from "bcryptjs";
-import { authenticate } from "../passport-config";
-import { issueJWT } from "../jwt-config";
+import bcryptjs from "bcryptjs";
+import passport from "../passport-config.js";
+import { issueJWT } from "../jwt-config.js";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
@@ -45,20 +45,21 @@ export const sign_up_post = [
     if (!errors.isEmpty()) {
       res.status(200).json(errors.array());
     } else {
-      hash(req.body.password, 10, async (err, hashedPassword) => {
+      bcryptjs.hash(req.body.password, 10, async (err, hashedPassword) => {
         if (err) {
           return next(err);
         } else {
           try {
-            const user = new User({
-              firstName: req.body.firstName,
-              lastName: req.body.lastName,
-              email: req.body.email,
-              username: req.body.username,
-              password: hashedPassword,
-              author: true,
+            const user = await prisma.user.create({
+              data: {
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+                username: req.body.username,
+                password: hashedPassword,
+                author: true,
+              },
             });
-            await user.save();
             res.status(200).json(user);
           } catch (err) {
             return next(err);
@@ -70,14 +71,14 @@ export const sign_up_post = [
 ];
 
 export const get_user = [
-  authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   (req, res) => {
     res.json(req.user);
   },
 ];
 
 export function login_post(req, res, next) {
-  authenticate("local", (err, user, info) => {
+  passport.authenticate("local", (err, user, info) => {
     if (err) {
       return next(err);
     }

@@ -1,9 +1,11 @@
 import "dotenv/config.js";
 import createError from "http-errors";
 import express, { json, urlencoded, static as static_ } from "express";
+import path from "path";
 import { join } from "path";
+import { fileURLToPath } from "url";
 import cors from "cors";
-import indexRouter from "./routes/index";
+import indexRouter from "./routes/index.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -26,8 +28,7 @@ app.use(function (err, req, res, next) {
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.send(err.message, err.status);
+  res.status(err.status || 500).send(err.message);
 });
 
 const PORT = 3000;

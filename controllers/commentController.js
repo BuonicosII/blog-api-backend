@@ -1,10 +1,11 @@
-import { authenticate } from "../passport-config";
+import passport from "../passport-config.js";
 import asyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
+
 export const create_comment_post = [
-  authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   body("text")
     .trim()
     .isLength({ min: 1 })
@@ -33,7 +34,7 @@ export const create_comment_post = [
 ];
 
 export const update_comment_put = [
-  authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   body("text")
     .trim()
     .isLength({ min: 1 })

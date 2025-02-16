@@ -1,17 +1,17 @@
 import "dotenv/config.js";
-const jsonwebtoken = require("jsonwebtoken");
+import jsonwebtoken from "jsonwebtoken";
 
-exports.issueJWT = (user) => {
+export function issueJWT(user) {
   const payload = {
     sub: user._id,
     iat: Date.now(),
   };
 
-  const signedToken = jsonwebtoken.sign(payload, process.env.PUB_KEY, {
+  const signedToken = jsonwebtoken.sign(payload, process.env.SECRET_KEY, {
     expiresIn: "1d",
   });
 
   return {
     token: signedToken,
   };
-};
+}

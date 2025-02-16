@@ -1,36 +1,46 @@
-var express = require('express');
-var router = express.Router();
-const userController = require('../controllers/userController')
-const postController = require('../controllers/postController')
-const commentController = require('../controllers/commentController')
+import { Router } from "express";
+var router = Router();
+import {
+  sign_up_post,
+  login_post,
+  get_user,
+} from "../controllers/userController.js";
+import {
+  get_all_posts,
+  get_post,
+  update_post_put,
+  delete_post,
+  create_post_post,
+} from "../controllers/postController.js";
+import {
+  get_post_comments,
+  create_comment_post,
+  get_all_comments,
+  update_comment_put,
+} from "../controllers/commentController.js";
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+router.post("/users/sign-up", sign_up_post);
 
-router.post('/users/sign-up', userController.sign_up_post)
+router.post("/users/login", login_post);
 
-router.post('/users/login', userController.login_post)
+router.get("/users/user", get_user);
 
-router.get('/users/user', userController.get_user)
+router.get("/posts", get_all_posts);
 
-router.get('/posts', postController.get_all_posts)
+router.get("/posts/:postid", get_post);
 
-router.get('/posts/:postid', postController.get_post)
+router.put("/posts/", update_post_put);
 
-router.put('/posts/', postController.update_post_put)
+router.delete("/posts/:postid", delete_post);
 
-router.delete('/posts/:postid', postController.delete_post)
+router.get("/posts/:postid/comments", get_post_comments);
 
-router.get('/posts/:postid/comments', commentController.get_post_comments)
+router.post("/posts", create_post_post);
 
-router.post('/posts', postController.create_post_post)
+router.post("/comments", create_comment_post);
 
-router.post('/comments', commentController.create_comment_post)
+router.get("/comments", get_all_comments);
 
-router.get('/comments', commentController.get_all_comments)
+router.put("/comments", update_comment_put);
 
-router.put('/comments', commentController.update_comment_put)
-
-module.exports = router;
+export default router;

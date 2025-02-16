@@ -1,16 +1,21 @@
 import "dotenv/config.js";
-import passport, { use } from "passport";
+import passport from "passport";
 import { Strategy as JwtStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
 import { ExtractJwt } from "passport-jwt";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-import { compare } from "bcryptjs";
+import bcpkg from "bcryptjs";
+const { compare } = bcpkg;
 
-use(
+passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
-      const user = await findOne({ username: username });
+      const user = await prisma.user.findUnique({
+        where: {
+          username: username,
+        },
+      });
       if (!user) {
         return done(null, false, { message: "Incorrect username" });
       }
@@ -27,14 +32,17 @@ use(
 
 const options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.PUB_KEY,
+  secretOrKey: process.env.SECRET_KEY,
 };
 
-use(
+passport.use(
   new JwtStrategy(options, async (jwt_payload, done) => {
     try {
-      const user = await findOne({ _id: jwt_payload.sub });
-
+      const user = await prisma.user.findUnique({
+        where: {
+          id: jwt_payload.sub,
+        },
+      });
       if (!user) {
         return done(null, false, { message: "Incorrect username" });
       }
