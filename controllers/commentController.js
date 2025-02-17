@@ -17,14 +17,14 @@ export const create_comment_post = [
       res.status(200).json(errors.array());
     } else {
       try {
-        const comment = new Comment({
-          text: req.body.text,
-          timeStamp: new Date(),
-          user: req.user._id,
-          post: req.body.postid,
+        const comment = prisma.comment.create({
+          data: {
+            text: req.body.text,
+            timeStamp: new Date(),
+            user: { connect: { id: req.user.id } },
+            post: { connect: { id: req.body.postid } },
+          },
         });
-
-        await comment.save();
         res.status(200).json(comment);
       } catch (err) {
         return next(err);
@@ -46,15 +46,12 @@ export const update_comment_put = [
       res.status(200).json(errors.array());
     } else {
       try {
-        const comment = new Comment({
-          text: req.body.text,
-          timeStamp: req.body.timeStamp,
-          user: req.user._id,
-          post: req.body.postid,
-          _id: req.body._id,
+        const comment = prisma.comment.update({
+          where: { id: req.body.id },
+          data: {
+            text: req.body.text,
+          },
         });
-
-        await findByIdAndUpdate(comment._id, comment, {});
         res.status(200).json(comment);
       } catch (err) {
         return next(err);
@@ -64,17 +61,22 @@ export const update_comment_put = [
 ];
 
 export const get_post_comments = asyncHandler(async (req, res, next) => {
-  const allComments = await find({ post: req.params.postid })
-    .populate("user")
-    .sort({ timeStamp: -1 })
-    .exec();
+  const allComments = prisma.comment.findMany({
+    where: { post: { id: req.params.postid } },
+    include: {
+      user: true,
+    },
+    orderBy: { timeStamp: "desc" },
+  });
   res.status(200).json(allComments);
 });
 
 export const get_all_comments = asyncHandler(async (req, res, next) => {
-  const allComments = await find()
-    .populate("user")
-    .sort({ timeStamp: -1 })
-    .exec();
+  const allComments = prisma.comment.findMany({
+    include: {
+      user: true,
+    },
+    orderBy: { timeStamp: "desc" },
+  });
   res.status(200).json(allComments);
 });
