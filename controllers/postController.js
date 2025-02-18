@@ -88,7 +88,12 @@ export const get_all_posts = asyncHandler(async (req, res, next) => {
 });
 
 export const get_post = asyncHandler(async (req, res, next) => {
-  const post = await prisma.post.findUnique({ id: req.params.postid });
+  const post = await prisma.post.findUnique({
+    where: { id: req.params.postid },
+    include: {
+      user: true,
+    },
+  });
   res.status(200).json(post);
 });
 

@@ -17,6 +17,7 @@ import {
   create_comment_post,
   get_all_comments,
   update_comment_put,
+  delete_comment,
 } from "../controllers/commentController.js";
 
 router.post("/users/sign-up", sign_up_post);
@@ -42,5 +43,7 @@ router.post("/comments", create_comment_post);
 router.get("/comments", get_all_comments);
 
 router.put("/comments", update_comment_put);
+
+router.delete("/comments/:id", delete_comment);
 
 export default router;
