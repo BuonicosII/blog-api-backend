@@ -83,7 +83,7 @@ export const update_post_put = [
 ];
 
 export const get_all_posts = asyncHandler(async (req, res, next) => {
-  const allPosts = await prisma.post.findMany({});
+  const allPosts = await prisma.post.findMany({ include: { user: true } });
   res.status(200).json(allPosts);
 });
 
