@@ -11,12 +11,12 @@ export const sign_up_post = [
     .trim()
     .isLength({ min: 1 })
     .escape()
-    .withMessage("Required firstName"),
+    .withMessage("Required first name"),
   body("lastName")
     .trim()
     .isLength({ min: 1 })
     .escape()
-    .withMessage("Required lastName"),
+    .withMessage("Required last name"),
   body("email")
     .trim()
     .isLength({ min: 1 })
@@ -37,7 +37,7 @@ export const sign_up_post = [
     .trim()
     .isLength({ min: 1 })
     .escape()
-    .withMessage("Required userName"),
+    .withMessage("Required username"),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
