@@ -106,7 +106,9 @@ export const delete_post = [
     .withMessage("Enter your password")
     .custom(async (value, { req }) => {
       const match = await bcryptjs.compare(value, req.user.password);
-      return match;
+      if (!match) {
+        return Promise.reject();
+      }
     })
     .withMessage("Wrong password"),
   asyncHandler(async (req, res, next) => {
